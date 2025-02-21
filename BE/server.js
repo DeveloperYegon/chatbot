@@ -18,7 +18,7 @@ const llm = new ChatGoogleGenerativeAI({
     apiKey: process.env.GEMINI_API_KEY,
     model: "gemini-1.5-flash",
     temperature: 0,
-    streaming: true,
+    streaming: false,
   });
 
   const callModel = async (state) => {
