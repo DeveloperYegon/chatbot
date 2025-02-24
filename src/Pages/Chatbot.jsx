@@ -1,18 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
-import Sidebar from "../Components/Sidebar";
 import { db, collection, addDoc, query, orderBy, where, onSnapshot } from "../firebase";
 import { v4 as uuidv4 } from "uuid"; // For generating unique chat IDs
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
-
+import { HiMiniBars3BottomLeft } from "react-icons/hi2";
 const Chatbot = () => {
 
 
   const [messages, setMessages] = useState([
     { role: "ai", content: "**Hello!** I'm here to chat with you." },
   ]);
+
   const [userMessage, setUserMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [chats, setChats] = useState([]);
@@ -87,7 +87,10 @@ const Chatbot = () => {
       content: "You are a helpful AI assistant trained by Tilt Technologies.",
     };
     const truncated = msgs.slice(-limit);
-    return [systemMessage, ...truncated];
+     // Ensure the AI's first message is always included
+  // const aiGreeting = msgs.find((msg) => msg.role === "ai" && msg.content.includes("Hello!"));
+    return  [systemMessage, ...truncated];
+    // aiGreeting ? [systemMessage, aiGreeting, ...truncated] :
   };
 
   // Handling message submission
@@ -95,23 +98,26 @@ const Chatbot = () => {
     e.preventDefault();
     if (!userMessage.trim() || !currentChatId) return;
 
-    const newUserMessage = {
-      id: uuidv4(),
-      chatId: currentChatId,
-      sender: "user",
-      content: userMessage,
-      timestamp: Date.now(),
-    };
+    // const newUserMessage = {
+    //   id: uuidv4(),
+    //   chatId: currentChatId,
+    //   role: "user",
+    //   content: userMessage,
+    //   timestamp: Date.now(),
+    // };
 
-    const updatedMessages= [...messages,{role:"user",content:userMessage}];
+    const updatedMessages = messages.length
+  ? [...messages, { role: "user", content: userMessage }]
+  : [{ role: "ai", content: "**Hello!** I'm here to chat with you." }, { role: "user", content: userMessage }];
 
     setMessages(updatedMessages);
     setUserMessage("");
     setLoading(true);
 
+
     try {
       // Add user message to Firestore
-      await addDoc(collection(db, "messages"), newUserMessage);
+    // await addDoc(collection(db, "messages"), newUserMessage);
       
       // Send message to backend for AI response
       const response = await axios.post("http://localhost:5000/chat", {
@@ -123,6 +129,9 @@ const Chatbot = () => {
   
       // Validate AI response
       const responseContent = response?.data?.kwargs?.content;
+      console.log(responseContent);
+
+      setMessages((prev) => [...prev,{role:"ai",content:responseContent}]);
 
       if (responseContent) {
         const aiMessage = {
@@ -133,7 +142,6 @@ const Chatbot = () => {
           timestamp: Date.now(),
         };
 
-        setMessages((prev) => [...prev,{role:"ai",content:responseContent}]);
         await addDoc(collection(db, "messages"), aiMessage); // Store AI response
       } else {
         console.error("Invalid response from backend:", response);
@@ -158,32 +166,40 @@ const Chatbot = () => {
     const newChatId = uuidv4(); // Generate new chat ID
     await addDoc(collection(db, "chats"), { id: newChatId, createdAt: Date.now(), userId });
     setCurrentChatId(newChatId);
-    setMessages([{ role: "ai", content: "**Hello!** I'm here to chat with you." }]);
+    // setMessages([{ role: "ai", content: "**Hello!** I'm here to chat with you." }]);
   };
 
-  return (
-    <main className="flex gap-1 h-full bg-[#8a8888]">
-      <div className="w-1/5 hidden relative left-0 h-screen">
-        <Sidebar />
-      </div>
-      <div className=" border w-full border-slate-500 m-3 rounded-2xl p-5">
-        <div className="md:p-10 overflow-auto flex flex-col">
-          <button
-            onClick={startNewChat}
-            style={{
-              marginBottom: "10px",
-              padding: "10px",
-              background: "#007bff",
-              color: "white",
-              borderRadius: "5px",
-            }}
-          >
-            Start New Chat
-          </button>
+  // If a chat is initiated but no message is sent within 5 minutes, you can automatically delete
+  useEffect(() => {
+    if (!currentChatId || messages.length > 1) return;
+  
+    const timer = setTimeout(async () => {
+      await deleteDoc(doc(db, "chats", currentChatId)); // Delete the unsent chat
+      setCurrentChatId(null);
+    }, 5 * 60 * 1000); // 5-minute timeout
+  
+    return () => clearTimeout(timer);
+  }, [currentChatId, messages]);
 
-          {/* Chat List */}
-          <div style={{ marginBottom: "10px", padding: "5px", background: "#eee", borderRadius: "5px" }}>
-            <h4>Past Chats:</h4>
+  return (
+    <main className="flex gap-1 h-screen bg-[#8a8888]">
+      {/* //Sidebar */}
+      <div className="w-1/4 hidden md:flex  flex-col px-4 py-7 bg-amber-50 h-screen">
+        
+        <div className="flex justify-between  gap-2  fixed top-20 left-1  bg-black text-white rounded-2xl ">
+      <HiMiniBars3BottomLeft className="m-3  text-4xl" />
+      <button
+            onClick={startNewChat}
+            
+            className="bg-[#000] px-2 border-white border-2 font-bold  rounded-lg "
+          >
+            New Chat
+          </button>
+        </div>
+      
+         {/* Chat List */}
+         <div className="overflow-auto pt-20">
+            <h4 className="text-center font-bold underline">Chat History </h4>
             {chats.map((chat) => (
               <button
                 key={chat.id}
@@ -202,7 +218,14 @@ const Chatbot = () => {
               </button>
             ))}
           </div>
+      </div>
 
+
+      {/* Chatbot */}
+      <div className=" border w-full border-slate-500 rounded-2xl p-5 m-1 flex flex-col gap-3">
+
+        <div className="md:p-10 border border-slate-500 rounded-2xl overflow-auto flex flex-col">
+         
           {/* Displaying Messages */}
           {messages.map((msg, index) => (
             <div
@@ -245,7 +268,7 @@ const Chatbot = () => {
           >
             Send
           </button>
-        </form>
+        </form> 
       </div>
     </main>
   );

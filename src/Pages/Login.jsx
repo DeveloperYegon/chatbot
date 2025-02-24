@@ -50,7 +50,7 @@ const Login = () => {
 };
 
   return (
-    <main className='h-full p-5 rounded-[10px] bg-white'>
+    <main className='h-screen p-5 rounded-[10px] bg-white'>
     <div className='border md:w-1/2 rounded-[10px] m-auto p-5 border-slate-500'>
         <h3 className='text-center py-5 font-bold text-[#F13934] text-2xl'>LOGIN</h3>
         <hr className='w-[80%] h-1 m-auto bg-black' />
