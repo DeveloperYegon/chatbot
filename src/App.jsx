@@ -7,13 +7,14 @@ import Chatbot from "./Pages/Chatbot";
 import Footer from './Components/Footer'
 import SignOut from './Pages/Signout';
 import Profile from './Pages/Profile';
+import Dashboard from './Pages/Dashboard';
 
 function App() {
   return (
     <Router>
     <Navbar />
     <Routes>
-      <Route path="/" element={<Chatbot/>} />
+      <Route path="/" element={<Dashboard/>} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup/>} />
       <Route path="/signout" element={<SignOut/>} />
