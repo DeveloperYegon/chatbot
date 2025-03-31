@@ -4,8 +4,8 @@ function Footer() {
 
   const year = new Date().getFullYear();
   return (
-    <footer className='bg-[#413542] bottom-0 w-full fixed py-5'>
-      <p className='text-center text-white'> &copy; {year}. Chatty . All rights reserved. </p>
+    <footer className=' bottom-0 w-full fixed py-2'>
+      <p className='text-center text-black'> &copy; {year}. Chatty . All rights reserved. </p>
     </footer>
   )
 }

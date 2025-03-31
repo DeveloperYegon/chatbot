@@ -70,15 +70,15 @@ function Sidebar({ isCollapsed, toggleSidebar }) {
          initializeChat();
        }, [currentChatId, userId]);
   return (
-    <main className={`bg-gray-800 text-white p-4 transition-all duration-300 ${isCollapsed ? "w-20" : "w-64"}`}>
+    <main className={`bg-[#fff] text-black p-4 transition-all duration-300 ${isCollapsed ? "w-20" : "w-64"}`}>
       <button
-        className="text-white text-2xl mb-4 cursor-pointer focus:outline-none"
+        className="text-black text-2xl mb-4 cursor-pointer focus:outline-none"
         onClick={toggleSidebar}
       >
         <HiMiniBars3BottomLeft className="text-4xl" />
       </button>
 
-      <div onClick={startNewChat} className=" px-2 flex gap-3 items-center border-slate-100 border font-bold  cursor-pointer rounded-lg" >
+      <div onClick={startNewChat} className=" px-2 flex gap-3 items-center border border-black font-bold  cursor-pointer rounded-lg" >
       <MdAdd className='text-4xl' /> {isCollapsed?"":"New Chat"}
       </div>
 

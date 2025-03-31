@@ -124,52 +124,14 @@ const Chatbot = () => {
 
 
   return (
-    <main className="flex-1 gap-1 h-screen bg-[#8a8888]">
-    {/* //Sidebar */}
-    {/* <div className="w-1/4  md:flex  flex-col px-4 py-7 bg-amber-50 h-screen"> */}
-      
-      {/* <div className="flex justify-between  gap-2  fixed top-20 left-1  bg-black text-white rounded-2xl ">
-    <HiMiniBars3BottomLeft className="m-3  text-4xl" />
-    <button
-          onClick={startNewChat}
-          
-          className="bg-[#000] px-2 border-white border-2 font-bold  rounded-lg "
-        >
-          New Chat
-        </button> 
-      </div> */}
-
-
-       {/* Chat List */}
-
-
-       {/* <div className="overflow-auto pt-20">
-          <h4 className="text-center font-bold underline">Chat History </h4>
-          {chats.map((chat) => (
-            <button
-              key={chat.id}
-              onClick={() => setCurrentChatId(chat.id)}
-              style={{
-                display: "block",
-                margin: "5px 0",
-                padding: "5px",
-                background: currentChatId === chat.id ? "#28a745" : "#ccc",
-                color: "white",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-            >
-              Chat {chat.id.substring(0, 6)}...
-            </button>
-          ))}
-        </div> */}
-    {/* </div> */}
+    <main className="flex flex-col w-full gap-1 md:mx-5 mx-2 p-3 bg-gray-100  overflow-auto">
+  
 
 
     {/* Chatbot */}
-    <div className=" border w-full border-slate-500 rounded-2xl p-5 m-1 flex flex-col gap-3">
+ 
 
-      <div className="md:p-10 border border-slate-500 bg-white rounded-2xl overflow-auto flex flex-col">
+      <div className="md:p-10 bg-white rounded-2xl mb-10 overflow-auto flex flex-col">
        
         {/* Displaying Messages */}
         {messages.map((msg, index) => (
@@ -193,12 +155,11 @@ const Chatbot = () => {
       </div>
 
       {/* Form to submit user messages */}
-      <form onSubmit={handleSubmit} noValidate className="mt-5 flex flex-col gap-3">
+      <form onSubmit={handleSubmit} noValidate 
+     className="md:mx-20 sticky bottom-20 bg-white my-5 flex flex-row border border-slate-300 gap-2 rounded-lg p-3">
         <textarea
           value={userMessage}
           onChange={(e) => setUserMessage(e.target.value)}
-          cols={5}
-          rows={5}
           placeholder="Type your message..."
           name="message"
           className="w-full p-2 rounded-lg bg-[#fff] focus:outline-none focus:ring focus:ring-blue-300"
@@ -214,7 +175,6 @@ const Chatbot = () => {
           Send
         </button>
       </form> 
-    </div>
   </main> 
   );
 };

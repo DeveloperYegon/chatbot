@@ -43,18 +43,26 @@ const extractInitials = (nameOrEmail) => {
 };
 
   return (
-   <nav className='flex justify-between sticky top-0 items-center px-5 h-16 bg-[#413542]  shadow-sm font-mono'>
+   <nav className='flex justify-around  sticky top-0 items-center px-5 h-20 bg-[#ffffff]  '>
     <Link to='/'>
 
-    <h1 className='font-bold text-4xl text-white'>Chatty</h1>
+    <h1 className='font-bold text-4xl text-black'>Chatty</h1>
     </Link>
     <ul>
     {user ? (
-        // If user is logged in, display user's initials
-        <Link className='bg-[#ffffff] text-black p-3 font-bold rounded-full' to="/profile">{initials}</Link>
+      <div className='flex gap-5'>
+        {/* // If user is logged in, display user's initials */}
+        <Link className='bg-black text-white  p-3 font-bold rounded-full' to="/profile">{initials}</Link>
+
+        <li className='rounded-full border border-black px-5 font-bold text-white bg-black  py-3'>
+         <Link to='/signout'>
+        Logout
+         </Link>
+        </li>
+      </div>
       ) : (
      
-      <li className='rounded-full border border-white px-5 text-white font-bold py-3'>
+      <li className='rounded-full border border-black px-5 font-bold text-white bg-black  py-3'>
          <Link to='/login'>
         login
          </Link>
